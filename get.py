@@ -4,9 +4,12 @@ import tkinter as tk
 import tkinter.scrolledtext as scrolledtext
 from tkinter.messagebox import showerror, showinfo, showwarning
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+from txt_area import TextArea
+
 
 #TODO pasek statusu - wykorzystać ten z aplikacji wcięcie podobnie jak okna dialogowe, potrzebne duże okno do ustawien
 #TODO w ustawieniach możliwość wyłączenia przesuwani po enterze oraz możliwość ustawienia wartości skoku
+
 
 class GET(object):
 
@@ -28,9 +31,9 @@ class GET(object):
         self.menu_bar()
 
     def make_widgets(self):
-        self.txtArea = scrolledtext.ScrolledText(self.root, undo=True)
-        self.txtArea['font'] = ('consolas', '12')
-        self.txtArea.pack(expand=True, fill='both')
+        self.text_area = TextArea(self.root)
+        self.text_area['font'] = ('consolas', '12')
+        self.text_area.pack(expand=True, fill='both')
 
     def menu_bar(self):
         self.menu = tk.Menu(self.root)
@@ -39,11 +42,16 @@ class GET(object):
         self.file_menu.add_command(label='Zapisz', command=self.save_file, accelerator='Ctrl+S')
         self.file_menu.add_command(label='Zapisz jako...', command=self.save_file_as)
 
+        self.line_menu = tk.Menu(self.menu, tearoff=0)
+        self.line_menu.add_command(label='Usuń duplikaty', command=self.text_area.remove_duplicates)
+
+
 
         self.help_menu = tk.Menu(self.menu, tearoff=0)
         self.help_menu.add_command(label='O programie', command=self.help)
 
         self.menu.add_cascade(label='Plik', menu=self.file_menu)
+        self.menu.add_cascade(label='Linie', menu=self.line_menu)
         self.menu.add_cascade(label='Pomoc', menu=self.help_menu)
 
         self.root.config(menu=self.menu)
@@ -55,10 +63,10 @@ class GET(object):
         self.file_path = askopenfilename(title='Wskaż plik', initialdir='./')
         self.file = open(self.file_path)
         for frag in iter(self.read_chunk, ''):
-            self.txtArea.insert(tk.END, frag)
+            self.text_area.insert(tk.END, frag)
 
     def save_file(self):
-        content = self.txtArea.get(1.0, tk.END)
+        content = self.text_area.get(1.0, tk.END)
         try:
             with open(self.file_path, 'w') as save_file:
                 save_file.writelines(content)
@@ -69,7 +77,7 @@ class GET(object):
         self.save_file()
 
     def save_file_as(self):
-        content = self.txtArea.get(1.0, tk.END)
+        content = self.text_area.get(1.0, tk.END)
         self.file_path = asksaveasfilename(title='Zapisz plik', initialdir='./')
         if content != '':
             try:
