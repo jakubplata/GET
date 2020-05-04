@@ -5,9 +5,9 @@ import tkinter.scrolledtext as scrolledtext
 from tkinter.messagebox import showerror, showinfo, showwarning
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from txt_area import TextArea
+from status_bar import StatusBar
 
 
-#TODO pasek statusu - wykorzystać ten z aplikacji wcięcie podobnie jak okna dialogowe, potrzebne duże okno do ustawien
 #TODO w ustawieniach możliwość wyłączenia przesuwani po enterze oraz możliwość ustawienia wartości skoku
 
 
@@ -31,9 +31,12 @@ class GET(object):
         self.menu_bar()
 
     def make_widgets(self):
-        self.text_area = TextArea(self.root)
+        self.status_bar = StatusBar(self.root)
+        self.status_bar.pack(side=tk.BOTTOM, fill='both', expand=True)
+        self.text_area = TextArea(self.root, self.status_bar)
         self.text_area['font'] = ('consolas', '12')
         self.text_area.pack(expand=True, fill='both')
+
 
     def menu_bar(self):
         self.menu = tk.Menu(self.root)
@@ -64,12 +67,16 @@ class GET(object):
         self.file = open(self.file_path)
         for frag in iter(self.read_chunk, ''):
             self.text_area.insert(tk.END, frag)
+        self.status_bar.set(self.file_path)
+        self.status_bar.clear_sleep()
 
     def save_file(self):
         content = self.text_area.get(1.0, tk.END)
         try:
             with open(self.file_path, 'w') as save_file:
                 save_file.writelines(content)
+                self.status_bar.set('Zapisano!')
+                self.status_bar.clear_sleep()
         except AttributeError:
             self.save_file_as()
 
