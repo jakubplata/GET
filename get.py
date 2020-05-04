@@ -48,13 +48,15 @@ class GET(object):
         self.line_menu = tk.Menu(self.menu, tearoff=0)
         self.line_menu.add_command(label='Usuń duplikaty', command=self.text_area.remove_duplicates)
 
-
+        self.column_menu = tk.Menu(self.menu, tearoff=0)
+        self.column_menu.add_command(label='Zamiana początkowych kolumn', command=self.text_area.column_swap)
 
         self.help_menu = tk.Menu(self.menu, tearoff=0)
         self.help_menu.add_command(label='O programie', command=self.help)
 
         self.menu.add_cascade(label='Plik', menu=self.file_menu)
         self.menu.add_cascade(label='Linie', menu=self.line_menu)
+        self.menu.add_cascade(label='Kolumny', menu=self.column_menu)
         self.menu.add_cascade(label='Pomoc', menu=self.help_menu)
 
         self.root.config(menu=self.menu)
@@ -63,12 +65,12 @@ class GET(object):
         return self.file.read(1024)
 
     def open_file(self):
+        self.text_area.clear()
         self.file_path = askopenfilename(title='Wskaż plik', initialdir='./')
         self.file = open(self.file_path)
         for frag in iter(self.read_chunk, ''):
             self.text_area.insert(tk.END, frag)
         self.status_bar.set(self.file_path)
-        self.status_bar.clear_sleep()
 
     def save_file(self):
         content = self.text_area.get(1.0, tk.END)
@@ -76,7 +78,6 @@ class GET(object):
             with open(self.file_path, 'w') as save_file:
                 save_file.writelines(content)
                 self.status_bar.set('Zapisano!')
-                self.status_bar.clear_sleep()
         except AttributeError:
             self.save_file_as()
 

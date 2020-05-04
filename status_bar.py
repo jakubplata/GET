@@ -16,7 +16,3 @@ class StatusBar(tk.Frame):
         self.label.config(text="")
         self.label.update_idletasks()
 
-    def clear_sleep(self):
-        time.sleep(5)
-        self.label.config(text="")
-        self.label.update_idletasks()
