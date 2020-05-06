@@ -1,6 +1,6 @@
 #  GET
 
-Program umożliwia edycję plików tekstowych
+Geodezyjny Edytor Tekstowy - program służący do edycji plików tekstowych
 
 ## Od czego zacząć
 
@@ -9,7 +9,7 @@ linię w dół
 
 ### Biblioteki
 
-Program nie korzysta z żadnych zewntrznych bibliotek, interfejs graficzny prezentowany z wykorzystaniem tkinter.
+Program nie korzysta z żadnych zewnętrznych bibliotek, interfejs graficzny prezentowany z wykorzystaniem tkinter.
 
 ### Pierwsze kroki
 
@@ -23,11 +23,13 @@ Program nie korzysta z żadnych zewntrznych bibliotek, interfejs graficzny preze
 
 ## Przyszłość
 
-Poniżej lista rzeczy które powinny zostać dodane w najbliższym czasie
+Poniżej lista rzeczy które powinny zostać dodane w najbliższym czasie:
 
 - [x] linie - usuwanie duplikatów
 - [x] kolumny - zamiana początkowych kolumn
 - [ ] kolumny - spłaszczenie drugiej kolumny względem pierwszej
+- [ ] tryb skokowy - ustawienia wartości skoku i możliwość wyłączenia
+- [ ] zaznaczanie kolumnowe
 
 
 

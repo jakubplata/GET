@@ -30,6 +30,7 @@ class GET(object):
         self.make_widgets()
         self.menu_bar()
 
+
     def make_widgets(self):
         self.status_bar = StatusBar(self.root)
         self.status_bar.pack(side=tk.BOTTOM, fill='both', expand=True)
@@ -44,17 +45,23 @@ class GET(object):
         self.file_menu.add_command(label='Otwórz', command=self.open_file)
         self.file_menu.add_command(label='Zapisz', command=self.save_file, accelerator='Ctrl+S')
         self.file_menu.add_command(label='Zapisz jako...', command=self.save_file_as)
-
+        # menu edycji
+        self.edit_menu = tk.Menu(self.menu, tearoff=0)
+        self.edit_menu.add_command(label='Kopiuj', command=self.copy, accelerator='Ctrl+C')
+        self.edit_menu.add_command(label='Wklej', command=self.paste, accelerator='Ctrl+V')
+        self.edit_menu.add_command(label='Wytnij', command=self.cut, accelerator='Ctrl+X')
+        # menu operacji na liniach
         self.line_menu = tk.Menu(self.menu, tearoff=0)
         self.line_menu.add_command(label='Usuń duplikaty', command=self.text_area.remove_duplicates)
-
+        # menu operacji na kolumnach
         self.column_menu = tk.Menu(self.menu, tearoff=0)
         self.column_menu.add_command(label='Zamiana początkowych kolumn', command=self.text_area.column_swap)
-
+        # pomoc
         self.help_menu = tk.Menu(self.menu, tearoff=0)
         self.help_menu.add_command(label='O programie', command=self.help)
 
         self.menu.add_cascade(label='Plik', menu=self.file_menu)
+        self.menu.add_cascade(label='Edycja', menu=self.edit_menu)
         self.menu.add_cascade(label='Linie', menu=self.line_menu)
         self.menu.add_cascade(label='Kolumny', menu=self.column_menu)
         self.menu.add_cascade(label='Pomoc', menu=self.help_menu)
@@ -93,6 +100,19 @@ class GET(object):
                     save_file.writelines(content)
             except FileNotFoundError:
                 showwarning('Uwaga', 'Nie wskazano pliku!!!')
+
+    def copy(self, event):
+        self.text_area.event_generate("&lt;&lt;Copy>>")
+        return
+
+    def paste(self, event):
+        self.text_area.event_generate("&lt;&lt;Paste>>")
+        return
+
+    def cut(self, event):
+        self.text_area.event_generate("&lt;&lt;Cut>>")
+        return
+
 
     def move(self, event):
         """
