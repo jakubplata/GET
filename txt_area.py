@@ -9,6 +9,8 @@ class TextArea(scrolledtext.ScrolledText):
     def __init__(self, root, status_bar):
         super().__init__(root, undo=True)
         self.status_bar = status_bar
+        self.start_row = '0'
+        self.start_column = '0'
 
     def _get_content(self):
         content = self.get(1.0, tk.END)
@@ -81,4 +83,6 @@ class TextArea(scrolledtext.ScrolledText):
         for i in range(int(self.start_row), int(self.row)+1):
             self.block_txt += self.get('%s.%s' % (i, self.start_column), '%s.%s' % (i, self.column)) + '\n'
             self.tag_add('block', '%s.%s' % (i, self.start_column), '%s.%s' % (i, self.column))
+
+
 

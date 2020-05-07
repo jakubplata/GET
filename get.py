@@ -14,7 +14,7 @@ from status_bar import StatusBar
 class GET(object):
 
     DOWN_FACTOR = 20
-    COLUMN_SELECT = True
+
     _VERSION = '0.1'
     _helptext = """
         GET - %s
@@ -28,6 +28,7 @@ class GET(object):
         self.root.bind('<Return>', self.move)
         self.root.bind('<Control-s>', self.save_file_shrt)
 
+        self.column_select_var = tk.BooleanVar()
 
 
 
@@ -40,25 +41,6 @@ class GET(object):
         self.text_area = TextArea(self.root, self.status_bar)
         self.text_area['font'] = ('consolas', '12')
         self.text_area.pack(expand=True, fill='both')
-        if self.COLUMN_SELECT:
-            self.text_area.bind('<ButtonPress-1>', self.text_area.column_select_start)
-            self.text_area.bind('<B1-Motion>', self.text_area.active_choice)
-            self.text_area.bind('<ButtonRelease-1>', self.text_area.column_select)
-            self.text_area.bind('<Control-x>', self.cut)
-            self.text_area.bind('<Control-X>', self.cut)
-            self.text_area.bind('<Control-v>', self.paste)
-            self.text_area.bind('<Control-V>', self.paste)
-            self.text_area.bind('<Control-c>', self.copy)
-            self.text_area.bind('<Control-C>', self.copy)
-            self.text_area.tag_configure("block", background="gainsboro")
-            self.text_area.tag_configure("sel", background='black',
-                                             foreground='lime green')
-        else:
-            self.text_area.tag_delete("block")
-            self.text_area.unbind('<ButtonPress-1>')
-            self.text_area.unbind('<B1-Motion>')
-            self.text_area.unbind('<ButtonRelease-1>')
-            self.text_area.tag_configure("sel", background='gainsboro')
 
 
     def menu_bar(self):
@@ -72,6 +54,9 @@ class GET(object):
         self.edit_menu.add_command(label='Kopiuj', command=self.copy, accelerator='Ctrl+C')
         self.edit_menu.add_command(label='Wklej', command=self.paste, accelerator='Ctrl+V')
         self.edit_menu.add_command(label='Wytnij', command=self.cut, accelerator='Ctrl+X')
+        self.edit_menu.add_checkbutton(label='Zaznaczanie blokowe', onvalue=1,
+                                   offvalue=0, variable=self.column_select_var,
+                                   command=self.selection_mode)
         # menu operacji na liniach
         self.line_menu = tk.Menu(self.menu, tearoff=0)
         self.line_menu.add_command(label='Usuń duplikaty', command=self.text_area.remove_duplicates)
@@ -124,7 +109,7 @@ class GET(object):
                 showwarning('Uwaga', 'Nie wskazano pliku!!!')
 
     def copy(self, event):
-        if self.COLUMN_SELECT:
+        if self.column_select_var.get():
             try:
                 self.root.clipboard_clear()
                 self.root.clipboard_append(self.text_area.block_txt.strip())
@@ -135,18 +120,15 @@ class GET(object):
         return "break"
 
     def paste(self, event):
-        if self.COLUMN_SELECT:
+        if self.column_select_var.get():
             try:
                 w, k = self.text_area.index(tk.INSERT).split('.')
                 w_kon, k_kon = self.text_area.index(tk.END).split('.')
                 ran = int(w_kon) - int(w)
                 clipboard = self.root.clipboard_get().split('\n')
-                print(len(clipboard)-ran)
                 if ran < len(clipboard):
                     for i in range(0, len(clipboard)-ran):
-                        print('wstawiam')
                         self.text_area.insert(tk.END, '\n' + ' ' * int(k))
-                #clipboard = clipboard[0:ran]
                 for l in range(0, len(clipboard)):
                     wiersz = str(int(w) + l)
                     self.text_area.insert("%s.%s" % (wiersz, k), clipboard[l])
@@ -157,7 +139,7 @@ class GET(object):
         return "break"
 
     def cut(self, event):
-        if self.COLUMN_SELECT:
+        if self.column_select_var.get():
             try:
                 self.root.clipboard_clear()
                 self.root.clipboard_append(self.text_area.block_txt.strip())
@@ -170,6 +152,26 @@ class GET(object):
             self.text_area.event_generate("<<Cut>>")
         return "break"
 
+    def selection_mode(self, event=None):
+        if self.column_select_var.get():
+            self.text_area.bind('<ButtonPress-1>', self.text_area.column_select_start)
+            self.text_area.bind('<B1-Motion>', self.text_area.active_choice)
+            self.text_area.bind('<ButtonRelease-1>', self.text_area.column_select)
+            self.text_area.bind('<Control-x>', self.cut)
+            self.text_area.bind('<Control-X>', self.cut)
+            self.text_area.bind('<Control-v>', self.paste)
+            self.text_area.bind('<Control-V>', self.paste)
+            self.text_area.bind('<Control-c>', self.copy)
+            self.text_area.bind('<Control-C>', self.copy)
+            self.text_area.tag_configure("block", background="gainsboro")
+            self.text_area.tag_configure("sel", background='black',
+                                         foreground='lime green')
+        else:
+            self.text_area.tag_delete("block")
+            self.text_area.unbind('<ButtonPress-1>')
+            self.text_area.unbind('<B1-Motion>')
+            self.text_area.unbind('<ButtonRelease-1>')
+            self.text_area.tag_configure("sel", background='gainsboro')
 
     def move(self, event):
         """
