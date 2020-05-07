@@ -141,9 +141,12 @@ class GET(object):
                 w_kon, k_kon = self.text_area.index(tk.END).split('.')
                 ran = int(w_kon) - int(w)
                 clipboard = self.root.clipboard_get().split('\n')
+                print(len(clipboard)-ran)
                 if ran < len(clipboard):
-                    showwarning('UWAGA', 'Dane poza zakresem!')
-                clipboard = clipboard[0:ran]
+                    for i in range(0, len(clipboard)-ran):
+                        print('wstawiam')
+                        self.text_area.insert(tk.END, '\n' + ' ' * int(k))
+                #clipboard = clipboard[0:ran]
                 for l in range(0, len(clipboard)):
                     wiersz = str(int(w) + l)
                     self.text_area.insert("%s.%s" % (wiersz, k), clipboard[l])
