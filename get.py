@@ -14,6 +14,7 @@ from status_bar import StatusBar
 class GET(object):
 
     DOWN_FACTOR = 20
+    COLUMN_SELECT = True
     _VERSION = '0.1'
     _helptext = """
         GET - %s
@@ -27,9 +28,11 @@ class GET(object):
         self.root.bind('<Return>', self.move)
         self.root.bind('<Control-s>', self.save_file_shrt)
 
+
+
+
         self.make_widgets()
         self.menu_bar()
-
 
     def make_widgets(self):
         self.status_bar = StatusBar(self.root)
@@ -37,6 +40,25 @@ class GET(object):
         self.text_area = TextArea(self.root, self.status_bar)
         self.text_area['font'] = ('consolas', '12')
         self.text_area.pack(expand=True, fill='both')
+        if self.COLUMN_SELECT:
+            self.text_area.bind('<ButtonPress-1>', self.text_area.column_select_start)
+            self.text_area.bind('<B1-Motion>', self.text_area.active_choice)
+            self.text_area.bind('<ButtonRelease-1>', self.text_area.column_select)
+            self.text_area.bind('<Control-x>', self.cut)
+            self.text_area.bind('<Control-X>', self.cut)
+            self.text_area.bind('<Control-v>', self.paste)
+            self.text_area.bind('<Control-V>', self.paste)
+            self.text_area.bind('<Control-c>', self.copy)
+            self.text_area.bind('<Control-C>', self.copy)
+            self.text_area.tag_configure("block", background="gainsboro")
+            self.text_area.tag_configure("sel", background='black',
+                                             foreground='lime green')
+        else:
+            self.text_area.tag_delete("block")
+            self.text_area.unbind('<ButtonPress-1>')
+            self.text_area.unbind('<B1-Motion>')
+            self.text_area.unbind('<ButtonRelease-1>')
+            self.text_area.tag_configure("sel", background='gainsboro')
 
 
     def menu_bar(self):
@@ -102,16 +124,48 @@ class GET(object):
                 showwarning('Uwaga', 'Nie wskazano pliku!!!')
 
     def copy(self, event):
-        self.text_area.event_generate("&lt;&lt;Copy>>")
-        return
+        if self.COLUMN_SELECT:
+            try:
+                self.root.clipboard_clear()
+                self.root.clipboard_append(self.text_area.block_txt.strip())
+            except AttributeError:
+                pass
+        else:
+            self.text_area.event_generate("<<Copy>>")
+        return "break"
 
     def paste(self, event):
-        self.text_area.event_generate("&lt;&lt;Paste>>")
-        return
+        if self.COLUMN_SELECT:
+            try:
+                w, k = self.text_area.index(tk.INSERT).split('.')
+                w_kon, k_kon = self.text_area.index(tk.END).split('.')
+                ran = int(w_kon) - int(w)
+                clipboard = self.root.clipboard_get().split('\n')
+                if ran < len(clipboard):
+                    showwarning('UWAGA', 'Dane poza zakresem!')
+                clipboard = clipboard[0:ran]
+                for l in range(0, len(clipboard)):
+                    wiersz = str(int(w) + l)
+                    self.text_area.insert("%s.%s" % (wiersz, k), clipboard[l])
+            except tk.TclError:
+                pass
+        else:
+            self.text_area.event_generate("<<Paste>>")
+        return "break"
 
     def cut(self, event):
-        self.text_area.event_generate("&lt;&lt;Cut>>")
-        return
+        if self.COLUMN_SELECT:
+            try:
+                self.root.clipboard_clear()
+                self.root.clipboard_append(self.text_area.block_txt.strip())
+                for i in range(int(self.text_area.start_row), int(self.text_area.row) + 1):
+                    self.text_area.delete('%s.%s' % (i, self.text_area.start_column),
+                                              '%s.%s' % (i, self.text_area.column))
+            except AttributeError:
+                pass
+        else:
+            self.text_area.event_generate("<<Cut>>")
+        return "break"
 
 
     def move(self, event):

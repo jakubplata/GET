@@ -47,3 +47,38 @@ class TextArea(scrolledtext.ScrolledText):
         self.clear()
         self.insert(1.0, '\n'.join(swap_content))
         self.status_bar.set('Zamienion początkowe kolumn')
+
+    def choice(self, row, col):
+        if row != self.start_row or col != self.start_column:
+            if self.start_row >= row or self.start_column >= col:
+                for i in range(int(row), int(self.start_row) + 1):
+                    self.tag_add("sel", '%s.%s' % (i, col),
+                                               '%s.%s' % (i, self.start_column))
+            else:
+                for i in range(int(self.start_row), int(row) + 1):
+                    self.tag_add("sel", '%s.%s' %
+                                               (i, self.start_column),
+                                               '%s.%s' % (i, col))
+
+    def active_choice(self, event=None):
+        self.tag_remove('sel', 1.0, tk.END)
+        self.tag_remove('block', 1.0, tk.END)
+        row, col = self.index(tk.INSERT).split('.')
+        self.choice(row, col)
+
+    def column_select_start(self, event):
+        self.tag_remove('sel', 1.0, tk.END)
+        self.start_row, self.start_column = self.index(tk.CURRENT).split('.')
+
+    def column_select(self, event):
+        self.block_txt = ''
+        self.row, self.column = self.index(tk.INSERT).split('.')
+        self.tag_remove('sel', 1.0, tk.END)
+        self.tag_remove('block', 1.0, tk.END)
+        if self.start_row >= self.row or self.start_column >= self.column:
+            self.row, self.column, self.start_row, self.start_column = self.start_row, self.start_column,\
+                                                                       self.row, self.column
+        for i in range(int(self.start_row), int(self.row)+1):
+            self.block_txt += self.get('%s.%s' % (i, self.start_column), '%s.%s' % (i, self.column)) + '\n'
+            self.tag_add('block', '%s.%s' % (i, self.start_column), '%s.%s' % (i, self.column))
+
