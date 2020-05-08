@@ -25,12 +25,10 @@ class GET(object):
         self.root = root
         self.root.title('GET')
         self.root.geometry('450x200')
-        self.root.bind('<Return>', self.move)
         self.root.bind('<Control-s>', self.save_file_shrt)
 
         self.column_select_var = tk.BooleanVar()
-
-
+        self.move_window_var = tk.BooleanVar()
 
         self.make_widgets()
         self.menu_bar()
@@ -41,7 +39,6 @@ class GET(object):
         self.text_area = TextArea(self.root, self.status_bar)
         self.text_area['font'] = ('consolas', '12')
         self.text_area.pack(expand=True, fill='both')
-
 
     def menu_bar(self):
         self.menu = tk.Menu(self.root)
@@ -57,6 +54,9 @@ class GET(object):
         self.edit_menu.add_checkbutton(label='Zaznaczanie blokowe', onvalue=1,
                                    offvalue=0, variable=self.column_select_var,
                                    command=self.selection_mode)
+        self.edit_menu.add_checkbutton(label='Tryb skokowy', onvalue=1,
+                                       offvalue=0, variable=self.move_window_var,
+                                       command=self.move_mode)
         # menu operacji na liniach
         self.line_menu = tk.Menu(self.menu, tearoff=0)
         self.line_menu.add_command(label='Usuń duplikaty', command=self.text_area.remove_duplicates)
@@ -184,6 +184,12 @@ class GET(object):
         current_y = self.root.winfo_y()
         y = str(int(current_y) + self.DOWN_FACTOR)
         self.root.geometry(f'+{current_x}+{y}')
+
+    def move_mode(self, event=None):
+        if self.move_window_var.get():
+            self.root.bind('<Return>', self.move)
+        else:
+            self.root.unbind('<Return>')
 
     def help(self):
         showinfo('O programie', self._helptext % (self._VERSION))

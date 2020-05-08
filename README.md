@@ -29,7 +29,7 @@ Poniżej lista rzeczy które powinny zostać dodane w najbliższym czasie:
 - [x] kolumny - zamiana początkowych kolumn
 - [ ] kolumny - spłaszczenie drugiej kolumny względem pierwszej
 - [ ] tryb skokowy - ustawienia wartości skoku i możliwość wyłączenia
-- [ ] zaznaczanie kolumnowe
+- [x] zaznaczanie kolumnowe
 
 
 
