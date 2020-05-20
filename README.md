@@ -28,7 +28,7 @@ Poniżej lista rzeczy które powinny zostać dodane w najbliższym czasie:
 - [x] linie - usuwanie duplikatów
 - [x] kolumny - zamiana początkowych kolumn
 - [ ] kolumny - spłaszczenie drugiej kolumny względem pierwszej
-- [ ] tryb skokowy - ustawienia wartości skoku i możliwość wyłączenia
+- [x] tryb skokowy - ustawienia wartości skoku i możliwość wyłączenia
 - [x] zaznaczanie kolumnowe
 
 

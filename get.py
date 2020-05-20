@@ -9,7 +9,6 @@ from status_bar import StatusBar
 from dialog import Dialog
 
 
-#TODO w ustawieniach możliwość wyłączenia przesuwani po enterze oraz możliwość ustawienia wartości skoku
 
 
 class GET(object):
