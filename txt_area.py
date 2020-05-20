@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import tkinter as tk
 import tkinter.scrolledtext as scrolledtext
-from tkinter.messagebox import showwarning
+
 
 
 class TextArea(scrolledtext.ScrolledText):
@@ -48,7 +48,7 @@ class TextArea(scrolledtext.ScrolledText):
             swap_content.append(new_line)
         self.clear()
         self.insert(1.0, '\n'.join(swap_content))
-        self.status_bar.set('Zamienion początkowe kolumn')
+        self.status_bar.set('Zamieniono początkowe kolumny')
 
     def choice(self, row, col):
         if row != self.start_row or col != self.start_column:

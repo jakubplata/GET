@@ -6,6 +6,7 @@ from tkinter.messagebox import showerror, showinfo, showwarning
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from txt_area import TextArea
 from status_bar import StatusBar
+from dialog import Dialog
 
 
 #TODO w ustawieniach możliwość wyłączenia przesuwani po enterze oraz możliwość ustawienia wartości skoku
@@ -13,7 +14,7 @@ from status_bar import StatusBar
 
 class GET(object):
 
-    DOWN_FACTOR = 20
+    JUMP_VAL = 20
 
     _VERSION = '0.1'
     _helptext = """
@@ -57,6 +58,7 @@ class GET(object):
         self.edit_menu.add_checkbutton(label='Tryb skokowy', onvalue=1,
                                        offvalue=0, variable=self.move_window_var,
                                        command=self.move_mode)
+        self.edit_menu.add_command(label='Ustawa skok', command=self.chane_jump_val)
         # menu operacji na liniach
         self.line_menu = tk.Menu(self.menu, tearoff=0)
         self.line_menu.add_command(label='Usuń duplikaty', command=self.text_area.remove_duplicates)
@@ -173,6 +175,10 @@ class GET(object):
             self.text_area.unbind('<ButtonRelease-1>')
             self.text_area.tag_configure("sel", background='gainsboro')
 
+    def chane_jump_val(self):
+        d = Dialog(self.root, jump_val=self.JUMP_VAL, title='Ustaw skok')
+        self.JUMP_VAL = d.result
+
     def move(self, event):
         """
         Metoda umożliwiajaca przesuwanie całego okna w pionie,
@@ -182,7 +188,7 @@ class GET(object):
         """
         current_x = self.root.winfo_x()
         current_y = self.root.winfo_y()
-        y = str(int(current_y) + self.DOWN_FACTOR)
+        y = str(int(current_y) + self.JUMP_VAL)
         self.root.geometry(f'+{current_x}+{y}')
 
     def move_mode(self, event=None):
