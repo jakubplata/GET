@@ -64,6 +64,7 @@ class GET(object):
         # menu operacji na kolumnach
         self.column_menu = tk.Menu(self.menu, tearoff=0)
         self.column_menu.add_command(label='Zamiana początkowych kolumn', command=self.text_area.column_swap)
+        self.column_menu.add_command(label='Spłaszczenie danych', command=self.text_area.flat)
         # pomoc
         self.help_menu = tk.Menu(self.menu, tearoff=0)
         self.help_menu.add_command(label='O programie', command=self.help)

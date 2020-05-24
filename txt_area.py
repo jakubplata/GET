@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import tkinter as tk
 import tkinter.scrolledtext as scrolledtext
-
+from collections import defaultdict
 
 
 class TextArea(scrolledtext.ScrolledText):
@@ -34,7 +34,6 @@ class TextArea(scrolledtext.ScrolledText):
         content = self._get_content()
         swap_content = []
         for line in content:
-            print(line)
             words = line.split()
             if len(words) == 2:
                 new_line = '\t'.join(words[::-1])
@@ -49,6 +48,22 @@ class TextArea(scrolledtext.ScrolledText):
         self.clear()
         self.insert(1.0, '\n'.join(swap_content))
         self.status_bar.set('Zamieniono początkowe kolumny')
+
+    def flat(self):
+        content = self._get_content()
+        flatten = defaultdict(list)
+        flat_content = []
+        for line in content:
+            words = line.split()
+            if len(words) == 2:
+                flatten[words[0]].append(words[1])
+            elif len(words) > 2:
+                flatten[words[0]].extend(words[1:])
+        for k, v in flatten.items():
+            flat_content.append('\t'.join((k, ', '.join(v))))
+        self.clear()
+        self.insert(1.0, '\n'.join(flat_content))
+        self.status_bar.set('Spłaszczono dane')
 
     def choice(self, row, col):
         if row != self.start_row or col != self.start_column:
