@@ -26,6 +26,7 @@ class GET(object):
         self.root.title('GET')
         self.root.geometry('450x200')
         self.root.bind('<Control-s>', self.save_file_shrt)
+        self.file_path = None
 
         self.column_select_var = tk.BooleanVar()
         self.move_window_var = tk.BooleanVar()
@@ -203,7 +204,13 @@ class GET(object):
 
 def main():
     root = tk.Tk()
-    GET(root)
+    get = GET(root)
+    def autosave():
+        #function that auto saves the file
+        if get.file_path is not None:
+            get.save_file()
+        root.after(60000 * 1, autosave)
+    autosave()
     root.mainloop()
 
 
