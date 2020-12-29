@@ -107,5 +107,5 @@ venv.bak/
 # mypy
 .mypy_cache/
 .idea
-
-
+GET-old
+pyinstaller_cmd.txt
