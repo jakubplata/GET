@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import tkinter as tk
 import tkinter.scrolledtext as scrolledtext
 from tkinter.messagebox import showerror, showinfo, showwarning
@@ -27,6 +28,7 @@ class GET(object):
         self.root.geometry('450x200')
         self.root.bind('<Control-s>', self.save_file_shrt)
         self.file_path = None
+        self.initialdir = './'
 
         self.column_select_var = tk.BooleanVar()
         self.move_window_var = tk.BooleanVar()
@@ -83,7 +85,8 @@ class GET(object):
 
     def open_file(self):
         self.text_area.clear()
-        self.file_path = askopenfilename(title='Wskaż plik', initialdir='./')
+        self.file_path = askopenfilename(title='Wskaż plik', initialdir=self.initialdir)
+        self.initialdir = os.path.dirname(self.file_path) # to open last opend directory
         self.file = open(self.file_path)
         for frag in iter(self.read_chunk, ''):
             self.text_area.insert(tk.END, frag)
@@ -103,7 +106,7 @@ class GET(object):
 
     def save_file_as(self):
         content = self.text_area.get(1.0, tk.END)
-        self.file_path = asksaveasfilename(title='Zapisz plik', initialdir='./')
+        self.file_path = asksaveasfilename(title='Zapisz plik', initialdir=self.initialdir)
         if content != '':
             try:
                 with open(self.file_path, 'w') as save_file:
