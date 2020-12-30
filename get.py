@@ -170,8 +170,8 @@ class GET(object):
             self.text_area.bind('<Control-c>', self.copy)
             self.text_area.bind('<Control-C>', self.copy)
             self.text_area.tag_configure("block", background="gainsboro")
-            self.text_area.tag_configure("sel", background='black',
-                                         foreground='lime green')
+            self.text_area.tag_configure("sel", background='white',
+                                         foreground='black')
         else:
             self.text_area.tag_delete("block")
             self.text_area.unbind('<ButtonPress-1>')
